@@ -24,15 +24,32 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-       Swal.fire({
-  icon: 'success',
-  title: 'Cadastro realizado com sucesso!',
-  showConfirmButton: false,
-  timer: 2000
+       // Salvar os dados no localStorage
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+const usuarioExiste = usuarios.some(usuario => usuario.email === email);
+if (usuarioExiste) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Este e-mail já está cadastrado!',
+        showConfirmButton: true,
+    });
+    return;
+}
+
+usuarios.push({ nome, email, senha });
+localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+Swal.fire({
+    icon: 'success',
+    title: 'Cadastro realizado com sucesso!',
+    showConfirmButton: false,
+    timer: 2000
 }).then(() => {
-  window.location.href = 'login.html';
+    window.location.href = 'login.html';
+});
+
 });
 
     });
-});
 

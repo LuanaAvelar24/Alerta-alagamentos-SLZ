@@ -1,5 +1,3 @@
-// login.js - Validação simples do formulário de login
-
 document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.getElementById('formLogin');
     const emailInput = document.getElementById('emailLogin');
@@ -13,33 +11,68 @@ document.addEventListener('DOMContentLoaded', () => {
         const senha = senhaInput.value;
 
         if (!email) {
-            alert('Por favor, insira seu e-mail.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo obrigatório',
+                text: 'Por favor, insira seu e-mail.'
+            });
             emailInput.focus();
             return;
         }
 
-        // Simples validação de formato de e-mail
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert('Por favor, insira um e-mail válido.');
+            Swal.fire({
+                icon: 'error',
+                title: 'E-mail inválido',
+                text: 'Por favor, insira um e-mail válido.'
+            });
             emailInput.focus();
             return;
         }
 
         if (!senha) {
-            alert('Por favor, insira sua senha.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo obrigatório',
+                text: 'Por favor, insira sua senha.'
+            });
             senhaInput.focus();
             return;
         }
 
-        // Aqui você faria a autenticação real, mas por enquanto só um alerta:
-        alert(`Tentando login com:\nE-mail: ${email}\nSenha: ${'*'.repeat(senha.length)}`);
+        const dadosCadastrados = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-        formLogin.reset();
+        const usuarioEncontrado = dadosCadastrados.find(usuario =>
+            usuario.email === email && usuario.senha === senha
+        );
+
+        if (usuarioEncontrado) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Login realizado com sucesso!',
+                text: `Bem-vindo, ${usuarioEncontrado.nome}!`,
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                window.location.href = 'formulario.html';
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro no login',
+                text: 'E-mail ou senha incorretos.'
+            });
+        }
     });
 
     linkEsqueciSenha.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('Função "Esqueci minha senha" ainda não implementada.');
+        Swal.fire({
+            icon: 'info',
+            title: 'Atenção',
+            text: 'Função "Esqueci minha senha" ainda não implementada.'
+        });
     });
 });
+
